@@ -18,7 +18,7 @@ angular
     'ngSanitize',
     'ngTouch'
   ])
-  .factory('mySocket', function (socketFactory) {
+  .factory('socket', function (socketFactory) {
     return socketFactory();
   })
   .config(function ($routeProvider) {
@@ -30,6 +30,10 @@ angular
       .when('/about', {
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'
+      })
+      .when('/camera', {
+        templateUrl: 'views/camera.html',
+        controller: 'CameraCtrl'
       })
       .otherwise({
         redirectTo: '/'

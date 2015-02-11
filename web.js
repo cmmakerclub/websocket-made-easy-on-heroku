@@ -20,12 +20,22 @@ app.use('/', routes)
 
 io.on('connection', function (socket) {
   console.log("CONNECTION ", socket.id, " connected");
+
   socket.emit('socket', { socket_id: socket.id } );
 
   socket.emit('news', { hello: 'world' });
+
+
   socket.on('my other event', function (data) {
     console.log(data);
   });
+
+  
+  socket.on('frame', function (data) {
+		console.log("GOT FRAME: ");
+    //console.log("FRAME: ", data);
+  });
+
 });
 
 server.listen(process.env.PORT || 5000);

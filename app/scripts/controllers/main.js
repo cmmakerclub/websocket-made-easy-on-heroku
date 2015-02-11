@@ -8,14 +8,14 @@
  * Controller of the yeomanHerokuAngularApp
  */
 angular.module('yeomanHerokuAngularApp')
-  .controller('MainCtrl', function ($scope, mySocket) {
+  .controller('MainCtrl', function ($scope, socket) {
 
-    mySocket.on("socket", function(msg) {
+    socket.on("socket", function(msg) {
       $scope.socket_id = msg.socket_id;
       $scope.$apply();
     });
     
-    mySocket.on("socket-data", function(msg) {
+    socket.on("socket-data", function(msg) {
       $scope.temperature = msg.p1;
 
       $scope.$apply(function() {
