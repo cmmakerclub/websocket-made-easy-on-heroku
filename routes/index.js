@@ -16,6 +16,13 @@ module.exports =  function(io) {
         // })
 
         io.sockets.emit('news', 'everyone');
+        if (!!io.sockets.connected[req.params.clientId]) {
+          io.sockets.connected[req.params.clientId].emit('socket-data', req.params);
+          res.send(req.params)
+        }
+        else {
+          res.send({ invalid: "client id"});
+        }        
       res.send('Hello World!')
     });
     return router;

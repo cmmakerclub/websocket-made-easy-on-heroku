@@ -9,14 +9,23 @@
  */
 angular.module('yeomanHerokuAngularApp')
   .controller('MainCtrl', function ($scope, mySocket) {
+
+    mySocket.on("socket", function(msg) {
+      $scope.socket_id = msg.socket_id;
+      $scope.$apply();
+    });
     
-    mySocket.on("news", function(msg) {
-        console.log("WE GOT NEWS: ", msg);
+    mySocket.on("socket-data", function(msg) {
+      $scope.temperature = msg.p1;
+
+      $scope.$apply(function() {
+
+
+      });
+
+
     });
 
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+
+
   });

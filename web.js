@@ -7,7 +7,7 @@ var express = require('express')
 
 var app = express()
     .use(morgan('combined'))
-    .use(methodOverride('X-HTTP-Method-Override'))
+    //.use(methodOverride('X-HTTP-Method-Override'))
     app.use(express.static(path.join(__dirname, 'dist')));
     // .use(gzippo.staticGzip(path.join(__dirname, "/dist")));
 
@@ -20,6 +20,8 @@ app.use('/', routes)
 
 io.on('connection', function (socket) {
   console.log("CONNECTION ", socket.id, " connected");
+  socket.emit('socket', { socket_id: socket.id } );
+
   socket.emit('news', { hello: 'world' });
   socket.on('my other event', function (data) {
     console.log(data);
