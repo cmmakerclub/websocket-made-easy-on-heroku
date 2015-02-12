@@ -18,6 +18,8 @@ var server = http.createServer(app)
 var routes = require('./routes/index')(io);
 app.use('/', routes)
 
+var ENABLE_FACE_DETECTION = false;
+
 
 io.on('connection', function (socket) {
   console.log("CONNECTION ", socket.id, " connected");
@@ -40,6 +42,7 @@ io.on('connection', function (socket) {
         return ; 
       }
 
+      // fs.createReadStream('test.log').pipe(fs.createWriteStream('newLog.log'));
       // 'data:image/jpeg;base64,'
       data = data.split(',')[1]
       var frame_data = new Buffer(data, 'base64'); 
@@ -47,48 +50,48 @@ io.on('connection', function (socket) {
         var img_gray = im.copy();
         var img_hsv = im.copy();
         var filter_image = im.copy();
-
-        im.detectObject(cv.FACE_CASCADE, {}, function(err, faces){
-          if (!faces){
-            console.log("No Faces")
-            return;
-          }
-          var face = faces[0] || {}
-            , ims = im.size()
-
-          var im2 = im.roi(face.x, face.y, face.width, face.height)
-          
-          im.adjustROI(
-               -face.y
-             , (face.y + face.height) - ims[0]
-             , -face.x
-             , (face.x + face.width) - ims[1])
-             
-          img_gray.convertGrayscale();
-          img_hsv.convertHSVscale();
+        im.copy(function() { console.log("copy", arguments)});
 
 
-          console.log("EMIT: ");
-          socket.emit('face_data', {
-            image_gray: img_gray.toBuffer().toString('base64'),
-            image_hsv: img_hsv.toBuffer().toString('base64'),
-            image_face: im.toBuffer().toString('base64'),
-            image_orig: orig_base64
-          })
+        if (ENABLE_FACE_DETECTION) {
+          im.detectObject(cv.FACE_CASCADE, {}, function(err, faces){
+            if (!faces){
+              console.log("No Faces")
+              return;
+            }
+            var face = faces[0] || {}
+              , ims = im.size()
 
-          socket.broadcast.emit('face_data', { 
-            image_gray: img_gray.toBuffer().toString('base64'), 
-            image_hsv: img_hsv.toBuffer().toString('base64'),
-            image_face: im.toBuffer().toString('base64'),
-            image_orig: orig_base64 
-          })
+            var im2 = im.roi(face.x, face.y, face.width, face.height)
+            
+            im.adjustROI(
+                 -face.y
+               , (face.y + face.height) - ims[0]
+               , -face.x
+               , (face.x + face.width) - ims[1])
+               
+          }); // detect Object
+        }
 
-          im2.save('out.jpg')
+         img_gray.convertGrayscale();
+         img_hsv.convertHSVscale(); 
 
-        });
-      });
-    });
 
+         console.log("EMIT: ");
+         socket.emit('face_data', {
+           image_gray: img_gray.toBuffer().toString('base64'),
+           image_hsv: img_hsv.toBuffer().toString('base64'),
+           image_face: im.toBuffer().toString('base64'),
+           image_orig: orig_base64
+         }); 
+         socket.broadcast.emit('face_data', { 
+           image_gray: img_gray.toBuffer().toString('base64'), 
+           image_hsv: img_hsv.toBuffer().toString('base64'),
+           image_face: im.toBuffer().toString('base64'),
+           image_orig: orig_base64 
+         })  //broadcast emit
+      }); //read Image
+    }); // onFrame 
 });
 
 server.listen(process.env.PORT || 5000);
