@@ -34,6 +34,12 @@ angular.module('yeomanHerokuAngularApp')
       $scope.ctx = $scope.canvas.getContext('2d');
     });
 
+     socket.on('face_data', function(d) {
+        $scope.src_gray = 'data:image/jpeg;base64,'+d.image_gray;
+        $scope.src_hsv = 'data:image/jpeg;base64,'+d.image_hsv;
+        $scope.src_face = 'data:image/jpeg;base64,'+d.image_face;
+        $scope.src_orig = d.image_orig;
+      })
 
     $scope.streaming_callback = function(stream) {
       $scope.video.src = window.URL.createObjectURL(stream); 

@@ -67,6 +67,8 @@ io.on('connection', function (socket) {
           img_gray.convertGrayscale();
           img_hsv.convertHSVscale();
 
+
+          console.log("EMIT: ");
           socket.emit('face_data', {
             image_gray: img_gray.toBuffer().toString('base64'),
             image_hsv: img_hsv.toBuffer().toString('base64'),
