@@ -84,12 +84,13 @@ io.on('connection', function (socket) {
            image_face: im.toBuffer().toString('base64'),
            image_orig: orig_base64
          }); 
-         socket.broadcast.emit('face_data', { 
-           image_gray: img_gray.toBuffer().toString('base64'), 
-           image_hsv: img_hsv.toBuffer().toString('base64'),
-           image_face: im.toBuffer().toString('base64'),
-           image_orig: orig_base64 
-         })  //broadcast emit
+         
+         // socket.broadcast.emit('face_data', { 
+         //   image_gray: img_gray.toBuffer().toString('base64'), 
+         //   image_hsv: img_hsv.toBuffer().toString('base64'),
+         //   image_face: im.toBuffer().toString('base64'),
+         //   image_orig: orig_base64 
+         // })  //broadcast emit
       }); //read Image
     }); // onFrame 
 });
